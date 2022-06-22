@@ -1,26 +1,5 @@
 #!/usr/env python
 from PIL import Image
-fname = 'forest-g7aa59715e_1920'
-name='Cartoon Forest'
-shortname=name.lower().replace(" ", "_") # out file will be shortname with a 'vxp' extension
-img = Image.open("images/" + fname + ".jpeg")
-img = img.resize((544, 306), Image.ANTIALIAS)
-bgFname = "images/" + fname + ".bmp"
-img.save(bgFname)
-
-bgFnamePreview = "images/" + fname + "-preview.bmp"
-img = img.resize((128, 72), Image.ANTIALIAS)
-img.save(bgFnamePreview)
-
-# Change this stuff:
-author='David Renne'
-background=bgFname
-depth=None # Set to None if you want a blank ZBMP.
-
-preview=bgFnamePreview #this should be 128x72
-dither=True
-uniqueid=0 # Set to 0 if you don't have one.
-
 #Don't change this stuff:
 #background2vxp: Converts BMP files to 3dmm backgrounds (through v3dmm)
 #Copyright (C) 2004-2015 Foone Turing
@@ -90,7 +69,7 @@ def CreateBackgroundFromImages(name,author,outfile,shortname,background,depth,pr
 #					glcrdata=str(open(,'rb').read())
 #					glcrdata=glcrdata[0:772]+pack('<3B',b,g,r)+glcrdata[772+3:]
       glcr.setDataFromFile('code/templates/rgb_template.GLCR')
-      
+
       bkgd.addReference(bds,0)
       bkgd.addReference(cam,0)
       bkgd.addReference(glcr,0)
@@ -115,7 +94,7 @@ def CreateBackgroundFromImages(name,author,outfile,shortname,background,depth,pr
       cath.setData(pack('<4B 4s L',1,0,3,3,'CAM '[::-1],0))
       gokd=lib3dmm.Quad('GOKD',uniqueid)
       gokd.setData('\x01\x00\x03\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x61\xC3\x00\x00\xFF\xFF\xFF\xFF')
-      
+
       mbmp=lib3dmm.Quad('MBMP',uniqueid)
       mbmpdata=MBMP()
       mbmpdata.loadFromSurface(minisurf)
@@ -204,7 +183,7 @@ def CreateBackgroundFromImages(name,author,outfile,shortname,background,depth,pr
     SaveCFG(outvxp)
     Save3CN(outvxp)
     Save3TH(outvxp)
-    
+
     outvxp.close()
     progress()
     created_files=[] # Clear file list, so they won't be nuked
@@ -232,6 +211,39 @@ def CreateBackgroundFromImages(name,author,outfile,shortname,background,depth,pr
       pass
 def NullProgress():
   pass
+
 if __name__=='__main__':
-  outfile='images/'+shortname+'.vxp'
-  CreateBackgroundFromImages(name,author,outfile,shortname,background,depth,preview,dither,uniqueid,NullProgress)
+  basedir="images\\wip2\\"
+  prefix='scenes_david_renne_'
+  for filename in os.listdir(basedir):
+    f = os.path.join(basedir, filename)
+    # checking if it is a file
+    if os.path.isfile(f):
+      fname = filename.replace(".jpg","").replace(".png","").replace(".gif","")
+      name=prefix+fname
+      shortname=name.lower().replace(" ", "_").replace("-", "_")
+      img = Image.open(basedir + filename)
+      img = img.resize((544, 306), Image.ANTIALIAS)
+      bgFname = basedir + fname + ".bmp"
+      img.save(bgFname)
+
+      bgFnamePreview = basedir + fname + "-preview.bmp"
+      img = img.resize((128, 72), Image.ANTIALIAS)
+      img.save(bgFnamePreview)
+
+      # Change this stuff:
+      author='David Renne'
+      background=bgFname
+      depth=None # Set to None if you want a blank ZBMP.
+
+      preview=bgFnamePreview #this should be 128x72
+      dither=True
+      uniqueid=0 # Set to 0 if you don't have one.
+      print "Working on: "+fname
+      outfile="images\\vxps\\"+shortname+".vxp"
+      CreateBackgroundFromImages(name,author,outfile,shortname,background,depth,preview,dither,uniqueid,NullProgress)
+      os.remove(bgFnamePreview)
+      os.remove(basedir + filename)
+      os.rename(bgFname, basedir + prefix + fname + ".bmp")
+
+

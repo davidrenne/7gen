@@ -9,20 +9,19 @@
 #You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 import os
 def quantize(infile,outfile,palettefile,dither):
-	try:
-		# os.chdir('code\\quantizer2')
-		if dither:
-			ditherstr='on'
-		else:
-			ditherstr='off'
-		filename='Quanter2.exe'
-		relinfile='"%s"' % (os.path.join('..\\..',infile))
-		reloutfile='"%s"' % (os.path.join('..\\..',outfile))
-		relpalfile='"%s"' % (os.path.join('..',palettefile))
-		pathjunk=filename,filename,relinfile,reloutfile,relpalfile,ditherstr
-		#print pathjunk
-		ret=os.spawnl(os.P_WAIT,*pathjunk)
-		# os.chdir('..\\..')
-	except OSError:
-		return False
-	return ret==0
+  try:
+    os.chdir('bin\\quantizer2')
+    if dither:
+      ditherstr='on'
+    else:
+      ditherstr='off'
+    filename='Quanter2.exe'
+    relinfile='"%s"' % (os.path.join('..\\..',infile))
+    reloutfile='"%s"' % (os.path.join('..\\..',outfile))
+    relpalfile='"%s"' % (os.path.join('..',palettefile))
+    pathjunk=filename,filename,relinfile,reloutfile,relpalfile,ditherstr
+    ret=os.spawnl(os.P_WAIT,*pathjunk)
+    os.chdir('..\\..\\')
+  except Exception as e:
+    return False
+  return ret==0
